@@ -10,9 +10,9 @@ import { NOTIFICATION_SYSTEM_STYLE } from 'utils/constants';
 
 class MainLayout extends React.Component {
   static isSidebarOpen() {
-    return document
-      .querySelector('.cr-sidebar')
-      .classList.contains('cr-sidebar--open');
+    if(document.querySelector('.cr-sidebar')
+      && document.querySelector('.cr-sidebar').classList)
+      return document.querySelector('.cr-sidebar').classList.contains('cr-sidebar--open');
   }
 
   componentWillReceiveProps({ breakpoint }) {
@@ -23,7 +23,7 @@ class MainLayout extends React.Component {
 
   componentDidMount() {
     this.checkBreakpoint(this.props.breakpoint);
-
+    {/*
     setTimeout(() => {
       if (!this.notificationSystem) {
         return;
@@ -47,7 +47,7 @@ class MainLayout extends React.Component {
           'Reduction is carefully designed template powered by React and Bootstrap4!',
         level: 'info',
       });
-    }, 2500);
+    }, 2500);*/}
   }
 
   // close sidebar when
@@ -78,23 +78,31 @@ class MainLayout extends React.Component {
   }
 
   openSidebar(openOrClose) {
-    if (openOrClose === 'open') {
-      return document
-        .querySelector('.cr-sidebar')
-        .classList.add('cr-sidebar--open');
+    if(document 
+        && document.querySelector('.cr-sidebar')
+        && document.querySelector('.cr-sidebar').classList){
+
+      if (openOrClose === 'open') {  
+          return document.querySelector('.cr-sidebar').classList.add('cr-sidebar--open');
+      }
+
+      document.querySelector('.cr-sidebar').classList.remove('cr-sidebar--open');
     }
-    document.querySelector('.cr-sidebar').classList.remove('cr-sidebar--open');
   }
 
   render() {
     const { children } = this.props;
     return (
       <main className="cr-app bg-light">
-        <Sidebar />
+        {/*
+        <Sidebar />*/}
+
         <Content fluid onClick={this.handleContentClick}>
           <Header />
           {children}
-          <Footer />
+          
+          {/*
+          <Footer />*/}
         </Content>
 
         <NotificationSystem

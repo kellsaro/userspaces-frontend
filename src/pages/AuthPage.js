@@ -2,6 +2,8 @@ import AuthForm, { STATE_LOGIN } from 'components/AuthForm';
 import React from 'react';
 import { Card, Col, Row } from 'reactstrap';
 
+const axios = require('axios');
+
 class AuthPage extends React.Component {
   handleAuthState = authState => {
     if (authState === STATE_LOGIN) {
@@ -12,7 +14,8 @@ class AuthPage extends React.Component {
   };
 
   handleLogoClick = () => {
-    this.props.history.push('/');
+    console.log("AuthPage::handleLogoClick !!!")
+    //this.props.history.push('/');
   };
 
   render() {

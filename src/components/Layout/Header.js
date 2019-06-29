@@ -29,6 +29,10 @@ import {
   PopoverBody,
 } from 'reactstrap';
 import bn from 'utils/bemnames';
+import $ from 'jquery';
+import { withRouter } from "react-router";
+
+const axios = require('axios');
 
 const bem = bn.create('header');
 
@@ -72,14 +76,41 @@ class Header extends React.Component {
     event.preventDefault();
     event.stopPropagation();
 
-    document.querySelector('.cr-sidebar').classList.toggle('cr-sidebar--open');
+    if(document
+      && document.querySelector('.cr-sidebar')
+      && document.querySelector('.cr-sidebar').classList)
+      document.querySelector('.cr-sidebar').classList.toggle('cr-sidebar--open');
   };
+
+  handleSignout = () => {
+    /*
+    axios.delete('http://localhost:3001/auth/sign_out',
+              JSON.parse(sessionStorage.getItem('user')) )
+    .then(resp => {
+      console.log(JSON.stringify(resp));
+      sessionStorage.removeItem('user');
+      this.props.history.push('/login');
+    });*/
+
+    $.ajax({
+      type: 'DELETE',
+      url: 'http://localhost:3001/auth/sign_out',
+      data: JSON.parse(sessionStorage.getItem('user')),
+      dataType: 'JSON',
+      headers: JSON.parse(sessionStorage.getItem('user'))
+    })
+    .done( resp => {
+      sessionStorage.removeItem('user');
+      this.props.history.push('/login',  { severity: 'success', message: 'User signed out successfully' });
+    });
+  }
 
   render() {
     const { isNotificationConfirmed } = this.state;
 
     return (
       <Navbar light expand className={bem.b('bg-white')}>
+        {/*
         <Nav navbar className="mr-2">
           <Button outline onClick={this.handleSidebarControlButton}>
             <MdClearAll size={25} />
@@ -87,9 +118,10 @@ class Header extends React.Component {
         </Nav>
         <Nav navbar>
           <SearchInput />
-        </Nav>
+        </Nav>*/}
 
         <Nav navbar className={bem.e('nav-right')}>
+          {/*
           <NavItem className="d-inline-flex">
             <NavLink id="Popover1" className="position-relative">
               {isNotificationConfirmed ? (
@@ -116,7 +148,7 @@ class Header extends React.Component {
                 <Notifications notificationsData={notificationsData} />
               </PopoverBody>
             </Popover>
-          </NavItem>
+          </NavItem>*/}
 
           <NavItem>
             <NavLink id="Popover2">
@@ -135,12 +167,20 @@ class Header extends React.Component {
             >
               <PopoverBody className="p-0 border-light">
                 <UserCard
+                  title="USER"
+                  subtitle="jane@jane.com"
+                  text=""
+                  className="border-light"
+                >
+                {/*
+                <UserCard
                   title="Jane"
                   subtitle="jane@jane.com"
                   text="Last updated 3 mins ago"
                   className="border-light"
-                >
+                >*/}
                   <ListGroup flush>
+                    {/*
                     <ListGroupItem tag="button" action className="border-light">
                       <MdPersonPin /> Profile
                     </ListGroupItem>
@@ -156,7 +196,10 @@ class Header extends React.Component {
                     <ListGroupItem tag="button" action className="border-light">
                       <MdHelp /> Help
                     </ListGroupItem>
-                    <ListGroupItem tag="button" action className="border-light">
+                    */}
+                    <ListGroupItem tag="button" action 
+                                  className="border-light"
+                                  onClick={this.handleSignout}>
                       <MdExitToApp /> Signout
                     </ListGroupItem>
                   </ListGroup>
@@ -170,4 +213,4 @@ class Header extends React.Component {
   }
 }
 
-export default Header;
+export default withRouter(Header);

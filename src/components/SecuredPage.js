@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'utils/propTypes';
+import { Redirect } from 'react-router-dom';
 
 import bn from 'utils/bemnames';
 
@@ -9,7 +10,7 @@ import Typography from './Typography';
 
 const bem = bn.create('page');
 
-const Page = ({
+const SecuredPage = ({
   title,
   breadcrumbs,
   tag: Tag,
@@ -19,11 +20,11 @@ const Page = ({
 }) => {
   const classes = bem.b('px-3', className);
 
-  return (
+  let page = (
     <Tag className={classes} {...restProps}>
     
       <div className={bem.e('header')}>
-        
+        {/*
         {title && typeof title === 'string' ? (
           <Typography type="h1" className={bem.e('title')}>
             {title}
@@ -41,15 +42,23 @@ const Page = ({
                 </BreadcrumbItem>
               ))}
           </Breadcrumb>
-        )}
+        )}*/}
 
+        
       </div>
       {children}
     </Tag>
   );
+
+  if (sessionStorage.getItem('user')){
+    return ( page );
+  }
+  else{
+    return ( <Redirect to='/login' /> );
+  } 
 };
 
-Page.propTypes = {
+SecuredPage.propTypes = {
   tag: PropTypes.component,
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   className: PropTypes.string,
@@ -62,9 +71,9 @@ Page.propTypes = {
   ),
 };
 
-Page.defaultProps = {
+SecuredPage.defaultProps = {
   tag: 'div',
   title: '',
 };
 
-export default Page;
+export default SecuredPage;

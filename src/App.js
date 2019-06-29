@@ -16,6 +16,9 @@ import FormPage from 'pages/FormPage';
 import InputGroupPage from 'pages/InputGroupPage';
 import ModalPage from 'pages/ModalPage';
 import ProgressPage from 'pages/ProgressPage';
+import SpacePage from 'pages/SpacePage';
+import SpaceFormPage from 'pages/SpaceFormPage';
+import SpaceShowPage from 'pages/SpaceShowPage';
 import TablePage from 'pages/TablePage';
 import TypographyPage from 'pages/TypographyPage';
 import WidgetPage from 'pages/WidgetPage';
@@ -34,125 +37,115 @@ class App extends React.Component {
       <BrowserRouter basename={getBasename()}>
         <GAListener>
           <Switch>
-            <LayoutRoute
-              exact
-              path="/login"
+            <LayoutRoute exact path="/"
+              layout={MainLayout}
+              component={SpacePage}
+            />
+            <LayoutRoute exact path="/spaces"
+              layout={MainLayout}
+              component={SpacePage}
+            />
+            <LayoutRoute exact path="/spaces/new"
+              layout={MainLayout}
+              component={SpaceFormPage}
+            />
+            <LayoutRoute exact path="/spaces/:id/edit"
+              layout={MainLayout}
+              component={SpaceFormPage}
+            />
+            <LayoutRoute exact path="/spaces/:id"
+              layout={MainLayout}
+              component={SpaceShowPage}
+            />
+            {/*
+            <LayoutRoute exact path="/dashboard"
+              layout={MainLayout}
+              component={DashboardPage}
+            />
+            <LayoutRoute exact path="/cards"
+              layout={MainLayout}
+              component={CardPage}
+            />
+            <LayoutRoute exact path="/charts"
+              layout={MainLayout}
+              component={ChartPage}
+            />
+            <LayoutRoute exact path="/widgets"
+              layout={MainLayout}
+              component={WidgetPage}
+            />*/}
+            {/* Components */}
+            {/*
+            <LayoutRoute exact path="/buttons"
+              layout={MainLayout}
+              component={ButtonPage}
+            />
+            <LayoutRoute exact path="/button-groups"
+              layout={MainLayout}
+              component={ButtonGroupPage}
+            />
+            <LayoutRoute exact path="/forms"
+              layout={MainLayout}
+              component={FormPage}
+            />
+            <LayoutRoute exact path="/input-groups"
+              layout={MainLayout}
+              component={InputGroupPage}
+            />
+            <LayoutRoute exact path="/dropdowns"
+              layout={MainLayout}
+              component={DropdownPage}
+            />
+            <LayoutRoute exact path="/badges"
+              layout={MainLayout}
+              component={BadgePage}
+            />
+            <LayoutRoute exact path="/alerts"
+              layout={MainLayout}
+              component={AlertPage}
+            />
+            <LayoutRoute exact path="/progress"
+              layout={MainLayout}
+              component={ProgressPage}
+            />
+            <LayoutRoute exact path="/modals"
+              layout={MainLayout}
+              component={ModalPage}
+            />*/}
+            {/* Contents */}
+            {/*
+            <LayoutRoute exact path="/typography"
+              layout={MainLayout}
+              component={TypographyPage}
+            />
+            <LayoutRoute exact path="/tables"
+              layout={MainLayout}
+              component={TablePage}
+            />*/}
+            {/* Pages */}
+            <LayoutRoute exact path="/login"
               layout={EmptyLayout}
               component={props => (
                 <AuthPage {...props} authState={STATE_LOGIN} />
               )}
+            />{/*
+            <LayoutRoute exact path="/login-modal"
+              layout={MainLayout}
+              component={AuthModalPage}
+            />*/}
+            <LayoutRoute exact path="/register"
+              layout={MainLayout}
+              component={AuthPage}
             />
-            <LayoutRoute
-              exact
-              path="/signup"
+            <LayoutRoute exact path="/signup"
               layout={EmptyLayout}
               component={props => (
                 <AuthPage {...props} authState={STATE_SIGNUP} />
               )}
             />
-            <LayoutRoute
-              exact
-              path="/login-modal"
-              layout={MainLayout}
-              component={AuthModalPage}
-            />
-            <LayoutRoute
-              exact
-              path="/"
-              layout={MainLayout}
-              component={DashboardPage}
-            />
-            <LayoutRoute
-              exact
-              path="/buttons"
-              layout={MainLayout}
-              component={ButtonPage}
-            />
-            <LayoutRoute
-              exact
-              path="/cards"
-              layout={MainLayout}
-              component={CardPage}
-            />
-            <LayoutRoute
-              exact
-              path="/widgets"
-              layout={MainLayout}
-              component={WidgetPage}
-            />
-            <LayoutRoute
-              exact
-              path="/typography"
-              layout={MainLayout}
-              component={TypographyPage}
-            />
-            <LayoutRoute
-              exact
-              path="/alerts"
-              layout={MainLayout}
-              component={AlertPage}
-            />
-            <LayoutRoute
-              exact
-              path="/tables"
-              layout={MainLayout}
-              component={TablePage}
-            />
-            <LayoutRoute
-              exact
-              path="/badges"
-              layout={MainLayout}
-              component={BadgePage}
-            />
-            <LayoutRoute
-              exact
-              path="/button-groups"
-              layout={MainLayout}
-              component={ButtonGroupPage}
-            />
-            <LayoutRoute
-              exact
-              path="/dropdowns"
-              layout={MainLayout}
-              component={DropdownPage}
-            />
-            <LayoutRoute
-              exact
-              path="/progress"
-              layout={MainLayout}
-              component={ProgressPage}
-            />
-            <LayoutRoute
-              exact
-              path="/modals"
-              layout={MainLayout}
-              component={ModalPage}
-            />
-            <LayoutRoute
-              exact
-              path="/forms"
-              layout={MainLayout}
-              component={FormPage}
-            />
-            <LayoutRoute
-              exact
-              path="/input-groups"
-              layout={MainLayout}
-              component={InputGroupPage}
-            />
-            <LayoutRoute
-              exact
-              path="/charts"
-              layout={MainLayout}
-              component={ChartPage}
-            />
-            <LayoutRoute
-              exact
-              path="/register"
-              layout={MainLayout}
-              component={AuthPage}
-            />
+            
             <Redirect to="/" />
+            
           </Switch>
         </GAListener>
       </BrowserRouter>
