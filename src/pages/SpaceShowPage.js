@@ -56,6 +56,7 @@ import { WithContext as ReactTags } from 'react-tag-input';
 
 import TagsInput from 'react-tagsinput';
 import 'react-tagsinput/react-tagsinput.css';
+import $ from 'jquery';
 
 const today = new Date();
 const lastWeek = new Date(
@@ -77,11 +78,26 @@ class SpaceShowPage extends React.Component {
   componentDidMount() {
     // this is needed, because InfiniteCalendar forces window scroll
     window.scrollTo(0, 0);
+
+    $.ajax({
+      type: 'GET',
+      url: `http://localhost:3001/api/v1/spaces/${this.props.match.params.id}`,
+      dataType: 'JSON',
+      headers: JSON.parse(sessionStorage.getItem('user'))
+    })
+    .done(resp => {
+      let space = resp.data;
+      this.setState({ name: space.attributes.name, url: space.attributes.url, tags: space.attributes.tags});
+    })
+    .fail(e => {
+      console.log(`Error: ${JSON.stringify(e)}`)
+    });
+
   }
 
   render() {
 
-    const { tags, suggestions } = this.state;
+    const { name, url, tags } = this.state;
 
     return (
       <SecuredPage
@@ -102,6 +118,7 @@ class SpaceShowPage extends React.Component {
                       type="text"
                       id="space_name"
                       disabled="disabled"
+                      value={this.state.name}
                     />
                   </FormGroup> 
                   
@@ -111,18 +128,25 @@ class SpaceShowPage extends React.Component {
                       type="url"
                       id="space_url"
                       disabled="disabled"
+                      value={this.state.url}
                     />
                   </FormGroup>
                   
                   <FormGroup>
                     <Label for="tags">Tags</Label>
-                    <TagsInput 
-                      value={this.state.tags}
-                      disabled="disabled" />
+                    <div>
+                    {
+                      this.state.tags.map((t, i) => {
+                        return (
+                          <span className='react-tagsinput-tag' key={i}>{t.name}</span>
+                        );
+                      })
+                    }
+                    </div>
                   </FormGroup>
 
                   <FormGroup inline>
-                    <Button onClick={ () => this.props.history.push('/spaces/:id/edit') }>Edit</Button>
+                    <Button onClick={ () => this.props.history.push(`/spaces/${this.props.match.params.id}/edit`) }>Edit</Button>
                     
                     <Button color='link' onClick={() => this.props.history.push('/')}>or Go back to Spaces Page</Button>
                     

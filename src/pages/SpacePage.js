@@ -44,6 +44,7 @@ import {
   Row,
 } from 'reactstrap';
 import { getColor } from 'utils/colors';
+import $ from 'jquery';
 
 const axios = require('axios');
 
@@ -58,9 +59,7 @@ class SpacePage extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      spaces: [ {id: 23, name: 'Futbol', numberOfLinks: 58}, 
-                {id: 34, name: 'Beisbol', numberOfLinks: 47}, 
-                {id: 45, name: 'Food', numberOfLinks: 34 } ]
+      spaces: []
     }
   }
   componentDidMount() {
@@ -68,6 +67,16 @@ class SpacePage extends React.Component {
     window.scrollTo(0, 0);
 
     // Consulta para obtener todos los spaces
+    $.ajax({
+      type: 'GET',
+      url: 'http://localhost:3001/api/v1/spaces',
+      dataType: 'JSON',
+      headers: JSON.parse(sessionStorage.getItem('user'))
+    })
+    .done(resp => {
+      console.log(resp)
+      this.setState({ spaces: resp.data });
+    });
   }
 
   render() {

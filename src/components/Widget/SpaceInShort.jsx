@@ -14,7 +14,7 @@ class SpaceInShort extends Component{
 
     handleOnClick = (e) => {
         console.log("Click en show space " + this.props.space.id);
-        this.props.history.push('/spaces/:id');
+        this.props.history.push(`/spaces/${this.props.space.id}`);
     }
 
     render = () => {
@@ -25,12 +25,12 @@ class SpaceInShort extends Component{
                         <div className="d-flex justify-content-between">
                             <CardText tag="div">
                                 <Typography className="mb-0">
-                                    <strong>{this.props.space.name}</strong>
+                                    <strong>{this.props.space.attributes['name']}</strong>
                                 </Typography>
                             </CardText>
                             <CardTitle className={'text-secondary'}>
-                                <Typography className="mb-0 text-muted small">Links</Typography>
-                                {this.props.space.numberOfLinks}
+                                <Typography className="mb-0 text-muted small">Tags</Typography>
+                                {this.props.space.attributes['number-of-tags']}
                             </CardTitle>
                         </div>
                     </Card>

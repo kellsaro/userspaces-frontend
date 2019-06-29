@@ -30,6 +30,7 @@ import {
 } from 'react-icons/md';
 import InfiniteCalendar from 'react-infinite-calendar';
 import {
+  Alert,
   Badge,
   Button,
   ButtonGroup,
@@ -56,6 +57,7 @@ import { WithContext as ReactTags } from 'react-tag-input';
 
 import TagsInput from 'react-tagsinput';
 import 'react-tagsinput/react-tagsinput.css';
+import $ from 'jquery';
 
 const axios = require('axios');
 
@@ -80,14 +82,8 @@ class SpaceFormPage extends React.Component {
       id: '',
       name: '',
       url: '',
-      tags: [],
-      suggestions: []
+      tags: []
     }
-
-    /*
-    this.handleTagDelete = this.handleTagDelete.bind(this);
-    this.handleTagAddition = this.handleTagAddition.bind(this);
-    this.handleTagDrag = this.handleTagDrag.bind(this);*/
 
     this.handleTagsChange = this.handleTagsChange.bind(this);
   }
@@ -95,38 +91,72 @@ class SpaceFormPage extends React.Component {
   componentDidMount() {
     // this is needed, because InfiniteCalendar forces window scroll
     window.scrollTo(0, 0);
+    if(this.props.match.params.id){
+      $.ajax({
+        type: 'GET',
+        url: `http://localhost:3001/api/v1/spaces/${this.props.match.params.id}`,
+        dataType: 'JSON',
+        headers: JSON.parse(sessionStorage.getItem('user'))
+      })
+      .done(resp => {
+        let space = resp.data;
+        this.setState({ id: space.id, name: space.attributes.name, url: space.attributes.url});
+        
+        let attr_tags = space.attributes.tags;
+        let tags = [];
+
+        for(let i in attr_tags){ 
+          tags.push( attr_tags[i].name )
+        }
+
+        this.setState({ tags: tags });
+      })
+      .fail(e => {
+        console.log(`Error: ${JSON.stringify(e)}`)
+      });
+    }
   }
-
-  /*
-  handleTagDelete(i) {
-    const { tags } = this.state;
-    this.setState({
-      tags: tags.filter((tag, index) => index !== i),
-    });
-  }
-
-  handleTagAddition(tag) {
-    this.setState(state => ({ tags: [...state.tags, tag] }));
-  }
-
-  handleTagDrag(tag, currPos, newPos) {
-    const tags = [...this.state.tags];
-    const newTags = tags.slice();
-
-    newTags.splice(currPos, 1);
-    newTags.splice(newPos, 0, tag);
-
-    // re-render
-    this.setState({ tags: newTags });
-  }*/
 
   handleTagsChange = (tags) => {
     this.setState({tags})
+    console.log(`tags: ${JSON.stringify(this.state.tags)}`)
+  }
+
+  handleSubmit = () => {
+    if(this.props.match.params.id){
+      $.ajax({
+        type: 'PUT',
+        url: `http://localhost:3001/api/v1/spaces/${this.props.match.params.id}`,
+        dataType: 'JSON',
+        data: this.state,
+        headers: JSON.parse(sessionStorage.getItem('user'))
+      })
+      .done(resp => {
+        this.props.history.push(`/spaces/${this.props.match.params.id}`, { severity: 'success', message: 'Information updated successfully' });
+      })
+      .fail(e => {
+        this.props.history.push(`/spaces/${this.props.match.params.id}/edit`, { severity: 'danger', message: 'There are erros in the data' });
+      });
+    }
+    else{
+      $.ajax({
+        type: 'POST',
+        url: 'http://localhost:3001/api/v1/spaces',
+        dataType: 'JSON',
+        data: this.state,
+        headers: JSON.parse(sessionStorage.getItem('user'))
+      })
+      .done(resp => {
+        console.log(JSON.stringify(resp))
+        this.props.history.push('/', { severity: 'success', message: 'Information created successfully' });
+      })
+      .fail(e => {
+        this.props.history.push(`/spaces/new`, { severity: 'danger', message: 'There are erros in the data' });
+      });
+    }
   }
 
   render() {
-
-    const { tags, suggestions } = this.state;
 
     return (
       <SecuredPage
@@ -142,7 +172,18 @@ class SpaceFormPage extends React.Component {
               { this.props.match.path === '/spaces/new' ? 'New' : 'Edit' } Space
               </CardHeader>
               <CardBody>
-                <Form>
+
+                { this.props.location 
+                  && this.props.location.state
+                  && this.props.location.state.severity
+                  && (
+                    <Alert color={this.props.location.state.severity}>
+                      {this.props.location.state.message}
+                    </Alert>
+                  )
+                }
+
+                <Form onSubmit={this.handleSubmit}>
                   <FormGroup>
                     <Label for="space_name">Name</Label>
                     <Input
@@ -162,6 +203,7 @@ class SpaceFormPage extends React.Component {
                       name="space[url]"
                       id="space_url"
                       placeholder="url"
+                      value={this.state.url}
                       onChange={(e) => this.setState({url: e.target.value})}
                     />
                   </FormGroup>
@@ -169,21 +211,11 @@ class SpaceFormPage extends React.Component {
                   <FormGroup>
                     <Label for="tags">Tags</Label>
                     <TagsInput value={this.state.tags} onChange={this.handleTagsChange} />
-                    {/*
-                    <div>
-                      <ReactTags tags={tags}
-                                  suggestions={suggestions}
-                                  handleDelete={this.handleTagDelete}
-                                  handleAddition={this.handleTagAddition}
-                                  handleDrag={this.handleTagDrag}
-                                  delimiters={delimiters}
-                                  inline />
-                    </div>*/}
                   </FormGroup>
 
                   <FormGroup inline>
-                    <Button>Submit</Button>
-                    <Button color='link' onClick={() => this.props.history.push('/')}>or Cancel and go back to Spaces Page</Button>
+                    <Button onClick={this.handleSubmit}>{ this.props.match.path === '/spaces/new' ? 'Create' : 'Update' }</Button>
+                    <Button color='link' onClick={() => this.props.history.push('/')}>or Go back to Spaces Page</Button>
                     
                   </FormGroup>
                 </Form>
