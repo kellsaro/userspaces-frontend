@@ -1,6 +1,6 @@
 # Userspaces-frontend
 
-Frontend application backed by (userspaces-backend)[https://github.com/kellsaro/userspaces-backend]
+Frontend application backed by [userspaces-backend](https://github.com/kellsaro/userspaces-backend)
 
 Requirements:
   * Node JS version 10.16.0
